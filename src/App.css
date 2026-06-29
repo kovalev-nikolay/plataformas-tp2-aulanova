@@ -1,0 +1,85 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.inicio {
+  width: min(900px, 100%);
+}
+
+.presentacion {
+  margin-bottom: 32px;
+}
+
+.marca {
+  color: #2f7d6d;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+h1 {
+  color: #263238;
+  font-size: 48px;
+  margin: 0 0 12px;
+}
+
+.descripcion {
+  color: #55616b;
+  font-size: 20px;
+  margin-bottom: 24px;
+}
+
+.boton-principal {
+  background: #2f7d6d;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 12px 18px;
+}
+
+.boton-principal:hover {
+  background: #256557;
+}
+
+.roles {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.rol-card {
+  background: white;
+  border: 1px solid #d9e2df;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.rol-card h2 {
+  color: #263238;
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+
+.rol-card p {
+  color: #55616b;
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 36px;
+  }
+
+  .roles {
+    grid-template-columns: 1fr;
+  }
+}

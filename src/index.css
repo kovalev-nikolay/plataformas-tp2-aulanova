@@ -1,0 +1,17 @@
+:root {
+  font-family: system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: #263238;
+  background: #f3f7f6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
