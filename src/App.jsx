@@ -1,6 +1,12 @@
+import { useState } from 'react'
+import { useAuth } from './context/AuthContext'
+import LoginPage from './pages/LoginPage'
 import './App.css'
 
 function App() {
+  const { currentUser, logout } = useAuth()
+  const [showLogin, setShowLogin] = useState(false)
+
   const roles = [
     {
       nombre: 'Admin',
@@ -16,6 +22,31 @@ function App() {
     },
   ]
 
+  if (currentUser) {
+    return (
+      <main className="app">
+        <section className="panel dashboard-temporal">
+          <p className="marca">Panel temporal</p>
+          <h1>Hola, {currentUser.nombre}</h1>
+          <p className="descripcion">
+            Entraste como <strong>{currentUser.rol}</strong>.
+          </p>
+          <button type="button" className="boton-secundario" onClick={logout}>
+            Cerrar sesion
+          </button>
+        </section>
+      </main>
+    )
+  }
+
+  if (showLogin) {
+    return (
+      <main className="app">
+        <LoginPage />
+      </main>
+    )
+  }
+
   return (
     <main className="app">
       <section className="inicio">
@@ -25,7 +56,11 @@ function App() {
           <p className="descripcion">
             Sistema simple para una escuela de idiomas
           </p>
-          <button type="button" className="boton-principal">
+          <button
+            type="button"
+            className="boton-principal"
+            onClick={() => setShowLogin(true)}
+          >
             Entrar al sistema
           </button>
         </div>

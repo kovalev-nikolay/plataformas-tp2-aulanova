@@ -8,11 +8,19 @@
 
 .inicio {
   width: min(940px, 100%);
+}
+
+.inicio,
+.panel {
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #d7e0dc;
   border-radius: 18px;
   box-shadow: 0 18px 45px rgba(58, 83, 75, 0.1);
   padding: 44px;
+}
+
+.panel {
+  width: min(620px, 100%);
 }
 
 .presentacion {
@@ -58,6 +66,21 @@ h1 {
   background: #527d6c;
 }
 
+.boton-secundario {
+  background: #ffffff;
+  border: 1px solid #bdd0c8;
+  border-radius: 999px;
+  color: #3f6558;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 12px 20px;
+}
+
+.boton-secundario:hover {
+  background: #eef5f2;
+}
+
 .roles {
   display: grid;
   gap: 18px;
@@ -84,13 +107,85 @@ h1 {
   margin: 0;
 }
 
+.login-panel {
+  display: grid;
+  gap: 28px;
+}
+
+.login-form {
+  display: grid;
+  gap: 16px;
+}
+
+.login-form label {
+  color: #40524c;
+  display: grid;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.login-form input {
+  background: #ffffff;
+  border: 1px solid #c8d8d1;
+  border-radius: 12px;
+  color: #263833;
+  padding: 12px 14px;
+}
+
+.login-form input:focus {
+  border-color: #5f8f7c;
+  outline: 3px solid rgba(95, 143, 124, 0.18);
+}
+
+.mensaje-error {
+  color: #9b3d35;
+  font-weight: 700;
+  margin: 0;
+}
+
+.usuarios-prueba {
+  border-top: 1px solid #d7e0dc;
+  display: grid;
+  gap: 10px;
+  padding-top: 22px;
+}
+
+.usuarios-prueba h2 {
+  color: #2d403a;
+  font-size: 20px;
+  margin: 0 0 4px;
+}
+
+.usuario-prueba {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid #dce6e2;
+  border-radius: 12px;
+  color: #5d6d67;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 90px 1fr 100px;
+  padding: 12px;
+}
+
+.usuario-prueba strong {
+  color: #3f6558;
+  text-transform: capitalize;
+}
+
+.dashboard-temporal {
+  display: grid;
+  gap: 10px;
+}
+
 @media (max-width: 700px) {
   .app {
     align-items: flex-start;
     padding: 24px 16px;
   }
 
-  .inicio {
+  .inicio,
+  .panel {
     border-radius: 14px;
     padding: 28px 20px;
   }
@@ -104,6 +199,11 @@ h1 {
   }
 
   .roles {
+    grid-template-columns: 1fr;
+  }
+
+  .usuario-prueba {
+    align-items: start;
     grid-template-columns: 1fr;
   }
 }
