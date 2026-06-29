@@ -1,21 +1,21 @@
 export const users = [
   {
     id: 1,
-    nombre: 'Sofia Admin',
+    nombre: 'Sofía Martínez',
     email: 'admin@aulanova.com',
     password: 'admin123',
     rol: 'admin',
   },
   {
     id: 2,
-    nombre: 'Martin Profesor',
+    nombre: 'Diego Fernández',
     email: 'profesor@aulanova.com',
     password: 'profe123',
     rol: 'profesor',
   },
   {
     id: 3,
-    nombre: 'Lucia Alumna',
+    nombre: 'Camila Torres',
     email: 'alumno@aulanova.com',
     password: 'alumno123',
     rol: 'alumno',

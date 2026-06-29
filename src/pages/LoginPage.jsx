@@ -11,10 +11,23 @@ function LoginPage() {
   function handleSubmit(event) {
     event.preventDefault()
 
-    const loginOk = login(email, password)
+    const emailIngresado = email.trim()
+    const passwordIngresado = password.trim()
+
+    if (!emailIngresado || !emailIngresado.includes('@')) {
+      setError('Ingresá un email válido.')
+      return
+    }
+
+    if (!passwordIngresado) {
+      setError('Ingresá la contraseña.')
+      return
+    }
+
+    const loginOk = login(emailIngresado, passwordIngresado)
 
     if (!loginOk) {
-      setError('Email o password incorrectos.')
+      setError('Usuario o contraseña incorrectos.')
     }
   }
 
@@ -28,15 +41,18 @@ function LoginPage() {
         </p>
       </div>
 
-      <form className="login-form" onSubmit={handleSubmit}>
+      <form className="login-form" onSubmit={handleSubmit} noValidate>
         <label>
           Email
           <input
             type="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="admin@aulanova.com"
-            required
+            onChange={(event) => {
+              setEmail(event.target.value)
+              setError('')
+            }}
+            placeholder="tu email"
+            autoComplete="off"
           />
         </label>
 
@@ -45,9 +61,12 @@ function LoginPage() {
           <input
             type="password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="admin123"
-            required
+            onChange={(event) => {
+              setPassword(event.target.value)
+              setError('')
+            }}
+            placeholder="tu contraseña"
+            autoComplete="new-password"
           />
         </label>
 

@@ -132,6 +132,10 @@ h1 {
   padding: 12px 14px;
 }
 
+.login-form input::placeholder {
+  color: #a9b8b2;
+}
+
 .login-form input:focus {
   border-color: #5f8f7c;
   outline: 3px solid rgba(95, 143, 124, 0.18);
