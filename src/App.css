@@ -117,14 +117,17 @@ h1 {
   gap: 16px;
 }
 
-.login-form label {
+.login-form label,
+.curso-form label {
   color: #40524c;
   display: grid;
   font-weight: 700;
   gap: 8px;
 }
 
-.login-form input {
+.login-form input,
+.curso-form input,
+.curso-form select {
   background: #ffffff;
   border: 1px solid #c8d8d1;
   border-radius: 12px;
@@ -132,11 +135,14 @@ h1 {
   padding: 12px 14px;
 }
 
-.login-form input::placeholder {
+.login-form input::placeholder,
+.curso-form input::placeholder {
   color: #a9b8b2;
 }
 
-.login-form input:focus {
+.login-form input:focus,
+.curso-form input:focus,
+.curso-form select:focus {
   border-color: #5f8f7c;
   outline: 3px solid rgba(95, 143, 124, 0.18);
 }
@@ -248,6 +254,51 @@ h1 {
   color: #2d403a;
 }
 
+.curso-form {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid #dce6e2;
+  border-radius: 14px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 18px;
+}
+
+.acciones-form,
+.acciones-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.acciones-form {
+  align-items: end;
+  grid-column: 1 / -1;
+}
+
+.boton-chico {
+  background: #ffffff;
+  border: 1px solid #bdd0c8;
+  border-radius: 999px;
+  color: #3f6558;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 8px 14px;
+}
+
+.boton-chico:hover {
+  background: #eef5f2;
+}
+
+.boton-peligro {
+  border-color: #e0b8b1;
+  color: #9b3d35;
+}
+
+.boton-peligro:hover {
+  background: #f8eeee;
+}
+
 .etiqueta {
   background: #edf5f1;
   border: 1px solid #c8d8d1;
@@ -289,6 +340,10 @@ h1 {
   }
 
   .resumen-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .curso-form {
     grid-template-columns: 1fr;
   }
 
