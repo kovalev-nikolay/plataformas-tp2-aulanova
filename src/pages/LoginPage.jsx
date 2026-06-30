@@ -6,6 +6,7 @@ function LoginPage() {
   const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [mostrarPassword, setMostrarPassword] = useState(false)
   const [error, setError] = useState('')
 
   function handleSubmit(event) {
@@ -58,16 +59,26 @@ function LoginPage() {
 
         <label>
           Password
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => {
-              setPassword(event.target.value)
-              setError('')
-            }}
-            placeholder="tu contraseña"
-            autoComplete="new-password"
-          />
+          <div className="password-field">
+            <input
+              type={mostrarPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value)
+                setError('')
+              }}
+              placeholder="tu contraseña"
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              className="boton-password"
+              onClick={() => setMostrarPassword(!mostrarPassword)}
+              aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+            >
+              {mostrarPassword ? '🙈' : '👁'}
+            </button>
+          </div>
         </label>
 
         {error && <p className="mensaje-error">{error}</p>}

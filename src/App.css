@@ -147,6 +147,38 @@ h1 {
   outline: 3px solid rgba(95, 143, 124, 0.18);
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 48px;
+  width: 100%;
+}
+
+.boton-password {
+  background: transparent;
+  border: none;
+  color: #3f6558;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 6px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.boton-password:hover {
+  opacity: 0.75;
+}
+
+.boton-password:focus-visible {
+  outline: 2px solid rgba(95, 143, 124, 0.45);
+  outline-offset: 2px;
+}
+
 .mensaje-error {
   color: #9b3d35;
   font-weight: 700;
