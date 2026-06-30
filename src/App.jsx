@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { useAuth } from './context/AuthContext'
+import AdminDashboard from './pages/AdminDashboard'
 import LoginPage from './pages/LoginPage'
+import ProfessorDashboard from './pages/ProfessorDashboard'
+import StudentDashboard from './pages/StudentDashboard'
 import './App.css'
 
 function App() {
-  const { currentUser, logout } = useAuth()
+  const { currentUser } = useAuth()
   const [showLogin, setShowLogin] = useState(false)
 
   const roles = [
@@ -23,18 +26,13 @@ function App() {
   ]
 
   if (currentUser) {
+    const userRole = currentUser.role || currentUser.rol
+
     return (
       <main className="app">
-        <section className="panel dashboard-temporal">
-          <p className="marca">Panel temporal</p>
-          <h1>Hola, {currentUser.nombre}</h1>
-          <p className="descripcion">
-            Entraste como <strong>{currentUser.rol}</strong>.
-          </p>
-          <button type="button" className="boton-secundario" onClick={logout}>
-            Cerrar sesion
-          </button>
-        </section>
+        {userRole === 'admin' && <AdminDashboard />}
+        {userRole === 'profesor' && <ProfessorDashboard />}
+        {userRole === 'alumno' && <StudentDashboard />}
       </main>
     )
   }
