@@ -1,10 +1,16 @@
 import { useState } from 'react'
-import { classes, courses, users } from '../data/mockData'
+import { classes, courses, users as initialUsers } from '../data/mockData'
 import { useAuth } from '../context/AuthContext'
 
 function AdminDashboard() {
   const { currentUser, logout } = useAuth()
-  const profesores = users.filter((user) => user.rol === 'profesor')
+  const usuarioVacio = {
+    nombre: '',
+    email: '',
+    rol: 'alumno',
+  }
+  const [usuarios, setUsuarios] = useState(initialUsers)
+  const profesores = usuarios.filter((user) => user.rol === 'profesor')
   const cursoVacio = {
     nombre: '',
     idioma: '',
@@ -12,8 +18,17 @@ function AdminDashboard() {
     profesorId: profesores[0]?.id || '',
   }
   const [cursos, setCursos] = useState(courses)
+  const [formUsuario, setFormUsuario] = useState(usuarioVacio)
   const [formCurso, setFormCurso] = useState(cursoVacio)
   const [cursoEditandoId, setCursoEditandoId] = useState(null)
+
+  function handleUsuarioChange(event) {
+    const { name, value } = event.target
+    setFormUsuario({
+      ...formUsuario,
+      [name]: value,
+    })
+  }
 
   function handleFormChange(event) {
     const { name, value } = event.target
@@ -26,6 +41,26 @@ function AdminDashboard() {
   function limpiarFormulario() {
     setFormCurso(cursoVacio)
     setCursoEditandoId(null)
+  }
+
+  function agregarUsuario(event) {
+    event.preventDefault()
+
+    if (!formUsuario.nombre || !formUsuario.email) {
+      return
+    }
+
+    const nuevoUsuario = {
+      id: Date.now(),
+      ...formUsuario,
+    }
+
+    setUsuarios([...usuarios, nuevoUsuario])
+    setFormUsuario(usuarioVacio)
+  }
+
+  function eliminarUsuario(userId) {
+    setUsuarios(usuarios.filter((user) => user.id !== userId))
   }
 
   function guardarCurso(event) {
@@ -74,7 +109,9 @@ function AdminDashboard() {
   }
 
   function nombreProfesor(profesorId) {
-    return users.find((user) => user.id === profesorId)?.nombre || 'Sin profesor'
+    return (
+      usuarios.find((user) => user.id === profesorId)?.nombre || 'Sin profesor'
+    )
   }
 
   return (
@@ -94,7 +131,7 @@ function AdminDashboard() {
 
       <section className="resumen-grid" aria-label="Resumen general">
         <article className="resumen-card">
-          <span>{users.length}</span>
+          <span>{usuarios.length}</span>
           <p>Usuarios</p>
         </article>
         <article className="resumen-card">
@@ -109,12 +146,64 @@ function AdminDashboard() {
 
       <section className="dashboard-section">
         <h2>Usuarios</h2>
+        <form className="admin-form" onSubmit={agregarUsuario}>
+          <label>
+            Nombre
+            <input
+              type="text"
+              name="nombre"
+              value={formUsuario.nombre}
+              onChange={handleUsuarioChange}
+              placeholder="Nombre y apellido"
+            />
+          </label>
+
+          <label>
+            Email
+            <input
+              type="email"
+              name="email"
+              value={formUsuario.email}
+              onChange={handleUsuarioChange}
+              placeholder="usuario@aulanova.com"
+            />
+          </label>
+
+          <label>
+            Rol
+            <select
+              name="rol"
+              value={formUsuario.rol}
+              onChange={handleUsuarioChange}
+            >
+              <option value="admin">admin</option>
+              <option value="profesor">profesor</option>
+              <option value="alumno">alumno</option>
+            </select>
+          </label>
+
+          <div className="acciones-form">
+            <button type="submit" className="boton-principal">
+              Agregar usuario
+            </button>
+          </div>
+        </form>
+
         <div className="lista-simple">
-          {users.map((user) => (
+          {usuarios.map((user) => (
             <article className="lista-item" key={user.id}>
               <strong>{user.nombre}</strong>
               <span>{user.email}</span>
               <span className="etiqueta">{user.rol}</span>
+              <div className="acciones-item">
+                <button
+                  type="button"
+                  className="boton-chico boton-peligro"
+                  onClick={() => eliminarUsuario(user.id)}
+                >
+                  Eliminar
+                </button>
+              </div>
             </article>
           ))}
         </div>

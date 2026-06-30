@@ -118,7 +118,8 @@ h1 {
 }
 
 .login-form label,
-.curso-form label {
+.curso-form label,
+.admin-form label {
   color: #40524c;
   display: grid;
   font-weight: 700;
@@ -127,7 +128,9 @@ h1 {
 
 .login-form input,
 .curso-form input,
-.curso-form select {
+.curso-form select,
+.admin-form input,
+.admin-form select {
   background: #ffffff;
   border: 1px solid #c8d8d1;
   border-radius: 12px;
@@ -136,13 +139,16 @@ h1 {
 }
 
 .login-form input::placeholder,
-.curso-form input::placeholder {
+.curso-form input::placeholder,
+.admin-form input::placeholder {
   color: #a9b8b2;
 }
 
 .login-form input:focus,
 .curso-form input:focus,
-.curso-form select:focus {
+.curso-form select:focus,
+.admin-form input:focus,
+.admin-form select:focus {
   border-color: #5f8f7c;
   outline: 3px solid rgba(95, 143, 124, 0.18);
 }
@@ -286,7 +292,8 @@ h1 {
   color: #2d403a;
 }
 
-.curso-form {
+.curso-form,
+.admin-form {
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid #dce6e2;
   border-radius: 14px;
@@ -375,7 +382,8 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .curso-form {
+  .curso-form,
+  .admin-form {
     grid-template-columns: 1fr;
   }
 
