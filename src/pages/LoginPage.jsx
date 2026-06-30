@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { users } from '../data/mockData'
 import { useAuth } from '../context/AuthContext'
 
-function LoginPage() {
+function LoginPage({ onVolverInicio }) {
   const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -34,6 +34,16 @@ function LoginPage() {
 
   return (
     <section className="panel login-panel">
+      <div className="login-top">
+        <button
+          type="button"
+          className="boton-volver"
+          onClick={onVolverInicio}
+        >
+          Volver al inicio
+        </button>
+      </div>
+
       <div>
         <p className="marca">Acceso AulaNova</p>
         <h1>Ingresar</h1>
