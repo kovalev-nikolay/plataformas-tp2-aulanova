@@ -1,16 +1,59 @@
-# React + Vite
+# AulaNova - Sistema para escuela de idiomas
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+## Materia
 
-Currently, two official plugins are available:
+Plataformas de Desarrollo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Integrante
 
-## React Compiler
+Nikolay Kovalev
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Temática
 
-## Expanding the Oxlint configuration
+AulaNova es una Single Page Application para una escuela de idiomas chica en Buenos Aires.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+La idea del proyecto es tener una aplicación simple para mostrar información de la escuela, permitir el ingreso de usuarios y mostrar paneles distintos según el rol.
+
+## Tecnologías
+
+- React
+- Vite
+- JavaScript
+- HTML
+- CSS
+- Mock data local
+
+## Usuarios de prueba
+
+| Rol | Email | Contraseña |
+| --- | --- | --- |
+| Admin | admin@aulanova.com | admin123 |
+| Profesor | profesor@aulanova.com | profe123 |
+| Alumno | alumno@aulanova.com | alumno123 |
+
+## Funcionalidades principales
+
+- Landing page con secciones Inicio, Cursos, Beneficios y Contacto.
+- Login y logout.
+- Roles admin, profesor y alumno.
+- Dashboard distinto según rol.
+- Admin puede gestionar usuarios de forma local.
+- Admin puede gestionar cursos de forma local.
+- Profesor puede consultar sus clases y alumnos.
+- Alumno puede consultar cursos y próximas clases ordenadas por fecha.
+- Formulario de contacto visual en la landing page.
+
+## Aclaraciones
+
+- El proyecto no usa backend ni base de datos porque corresponde al TP_2 frontend.
+- Los datos son mock/locales.
+- Para el final se podría agregar API REST, base de datos y autenticación con token.
+
+## Comandos
+
+```bash
+npm.cmd install
+npm.cmd run dev
+npm.cmd run lint
+npm.cmd run build
+```
