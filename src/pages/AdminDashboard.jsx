@@ -7,6 +7,7 @@ function AdminDashboard() {
   const usuarioVacio = {
     nombre: '',
     email: '',
+    password: '',
     rol: 'alumno',
   }
   const [usuarios, setUsuarios] = useState(initialUsers)
@@ -21,6 +22,7 @@ function AdminDashboard() {
   const [formUsuario, setFormUsuario] = useState(usuarioVacio)
   const [formCurso, setFormCurso] = useState(cursoVacio)
   const [cursoEditandoId, setCursoEditandoId] = useState(null)
+  const [mensajeUsuarios, setMensajeUsuarios] = useState('')
 
   function handleUsuarioChange(event) {
     const { name, value } = event.target
@@ -45,8 +47,9 @@ function AdminDashboard() {
 
   function agregarUsuario(event) {
     event.preventDefault()
+    setMensajeUsuarios('')
 
-    if (!formUsuario.nombre || !formUsuario.email) {
+    if (!formUsuario.nombre || !formUsuario.email || !formUsuario.password) {
       return
     }
 
@@ -60,7 +63,24 @@ function AdminDashboard() {
   }
 
   function eliminarUsuario(userId) {
+    const usuario = usuarios.find((user) => user.id === userId)
+    const cursosDelProfesor = cursos.filter(
+      (course) => course.profesorId === userId,
+    )
+    const cursosIds = cursosDelProfesor.map((course) => course.id)
+    const tieneClases = classes.some((clase) =>
+      cursosIds.includes(clase.courseId),
+    )
+
+    if (usuario?.rol === 'profesor' && (cursosDelProfesor.length || tieneClases)) {
+      setMensajeUsuarios(
+        'No se puede eliminar este profesor porque tiene cursos o clases asignadas.',
+      )
+      return
+    }
+
     setUsuarios(usuarios.filter((user) => user.id !== userId))
+    setMensajeUsuarios('')
   }
 
   function guardarCurso(event) {
@@ -170,6 +190,17 @@ function AdminDashboard() {
           </label>
 
           <label>
+            Password
+            <input
+              type="password"
+              name="password"
+              value={formUsuario.password}
+              onChange={handleUsuarioChange}
+              placeholder="Contraseña inicial"
+            />
+          </label>
+
+          <label>
             Rol
             <select
               name="rol"
@@ -189,11 +220,14 @@ function AdminDashboard() {
           </div>
         </form>
 
+        {mensajeUsuarios && <p className="mensaje-error">{mensajeUsuarios}</p>}
+
         <div className="lista-simple">
           {usuarios.map((user) => (
             <article className="lista-item" key={user.id}>
               <strong>{user.nombre}</strong>
               <span>{user.email}</span>
+              <span>Contraseña: ••••••••</span>
               <span className="etiqueta">{user.rol}</span>
               <div className="acciones-item">
                 <button
