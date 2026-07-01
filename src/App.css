@@ -490,6 +490,13 @@ h1 {
   padding-top: 22px;
 }
 
+.usuarios-prueba-header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
 .usuarios-prueba h2 {
   color: #2d403a;
   font-size: 20px;

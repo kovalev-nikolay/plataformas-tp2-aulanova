@@ -7,6 +7,7 @@ function LoginPage({ onVolverInicio }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [mostrarPassword, setMostrarPassword] = useState(false)
+  const [mostrarPasswordsPrueba, setMostrarPasswordsPrueba] = useState(false)
   const [error, setError] = useState('')
 
   function handleSubmit(event) {
@@ -99,12 +100,23 @@ function LoginPage({ onVolverInicio }) {
       </form>
 
       <div className="usuarios-prueba">
-        <h2>Usuarios de prueba</h2>
+        <div className="usuarios-prueba-header">
+          <h2>Usuarios de prueba</h2>
+          <button
+            type="button"
+            className="boton-chico"
+            onClick={() => setMostrarPasswordsPrueba(!mostrarPasswordsPrueba)}
+          >
+            {mostrarPasswordsPrueba
+              ? 'Ocultar contraseñas'
+              : 'Mostrar contraseñas'}
+          </button>
+        </div>
         {users.map((user) => (
           <div className="usuario-prueba" key={user.id}>
             <strong>{user.rol}</strong>
             <span>{user.email}</span>
-            <span>{user.password}</span>
+            <span>{mostrarPasswordsPrueba ? user.password : '••••••••'}</span>
           </div>
         ))}
       </div>

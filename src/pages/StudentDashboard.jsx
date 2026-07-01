@@ -10,7 +10,13 @@ function StudentDashboard() {
   const clasesDelAlumno = classes.filter((clase) =>
     cursosIds.includes(clase.courseId),
   )
-  const proximasClases = clasesDelAlumno.slice(0, 3)
+  const proximasClases = [...clasesDelAlumno]
+    .sort(
+      (primeraClase, segundaClase) =>
+        new Date(`${primeraClase.fecha}T${primeraClase.hora}`) -
+        new Date(`${segundaClase.fecha}T${segundaClase.hora}`),
+    )
+    .slice(0, 3)
 
   function nombreCurso(courseId) {
     return courses.find((course) => course.id === courseId)?.nombre
