@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { users } from '../data/mockData'
 import { useAuth } from '../context/AuthContext'
 
 function LoginPage({ onVolverInicio }) {
@@ -7,11 +6,13 @@ function LoginPage({ onVolverInicio }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [mostrarPassword, setMostrarPassword] = useState(false)
-  const [mostrarPasswordsPrueba, setMostrarPasswordsPrueba] = useState(false)
   const [error, setError] = useState('')
+  const [ingresando, setIngresando] = useState(false)
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
+
+    if (ingresando) return
 
     const emailIngresado = email.trim()
     const passwordIngresado = password.trim()
@@ -26,10 +27,15 @@ function LoginPage({ onVolverInicio }) {
       return
     }
 
-    const loginOk = login(emailIngresado, passwordIngresado)
+    setIngresando(true)
+    setError('')
 
-    if (!loginOk) {
-      setError('Usuario o contraseña incorrectos.')
+    try {
+      await login(emailIngresado, passwordIngresado)
+    } catch (errorLogin) {
+      setError(errorLogin.message || 'No se pudo iniciar sesión.')
+    } finally {
+      setIngresando(false)
     }
   }
 
@@ -49,7 +55,7 @@ function LoginPage({ onVolverInicio }) {
         <p className="marca">Acceso AulaNova</p>
         <h1>Ingresar</h1>
         <p className="descripcion">
-          Usar un usuario de prueba para entrar al sistema.
+          Ingresá con tu cuenta para entrar al sistema.
         </p>
       </div>
 
@@ -94,32 +100,10 @@ function LoginPage({ onVolverInicio }) {
 
         {error && <p className="mensaje-error">{error}</p>}
 
-        <button type="submit" className="boton-principal">
-          Entrar
+        <button type="submit" className="boton-principal" disabled={ingresando}>
+          {ingresando ? 'Ingresando...' : 'Entrar'}
         </button>
       </form>
-
-      <div className="usuarios-prueba">
-        <div className="usuarios-prueba-header">
-          <h2>Usuarios de prueba</h2>
-          <button
-            type="button"
-            className="boton-chico"
-            onClick={() => setMostrarPasswordsPrueba(!mostrarPasswordsPrueba)}
-          >
-            {mostrarPasswordsPrueba
-              ? 'Ocultar contraseñas'
-              : 'Mostrar contraseñas'}
-          </button>
-        </div>
-        {users.map((user) => (
-          <div className="usuario-prueba" key={user.id}>
-            <strong>{user.rol}</strong>
-            <span>{user.email}</span>
-            <span>{mostrarPasswordsPrueba ? user.password : '••••••••'}</span>
-          </div>
-        ))}
-      </div>
     </section>
   )
 }
