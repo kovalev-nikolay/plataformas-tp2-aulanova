@@ -73,3 +73,35 @@ export function updateUserRequest(id, usuario) {
 export function deleteUserRequest(id) {
   return authenticatedRequest(`/users/${id}`, { method: 'DELETE' })
 }
+
+export function getCoursesRequest() {
+  return authenticatedRequest('/courses')
+}
+
+export function createCourseRequest(curso) {
+  return authenticatedRequest('/courses', {
+    method: 'POST',
+    body: JSON.stringify({
+      nombre: curso.nombre,
+      idioma: curso.idioma,
+      nivel: curso.nivel,
+      profesorId: Number(curso.profesorId),
+    }),
+  })
+}
+
+export function updateCourseRequest(id, curso) {
+  return authenticatedRequest(`/courses/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      nombre: curso.nombre,
+      idioma: curso.idioma,
+      nivel: curso.nivel,
+      profesorId: Number(curso.profesorId),
+    }),
+  })
+}
+
+export function deleteCourseRequest(id) {
+  return authenticatedRequest(`/courses/${id}`, { method: 'DELETE' })
+}

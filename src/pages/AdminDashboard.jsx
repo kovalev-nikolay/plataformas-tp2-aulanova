@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
-import { classes, courses } from '../data/mockData'
+import { classes } from '../data/mockData'
 import { useAuth } from '../context/AuthContext'
 import {
   createUserRequest,
+  createCourseRequest,
+  deleteCourseRequest,
   deleteUserRequest,
+  getCoursesRequest,
   getUsersRequest,
+  updateCourseRequest,
   updateUserRequest,
 } from '../services/api'
 
@@ -21,24 +25,38 @@ function normalizarUsuario(user) {
   return { ...usuario, activo: Boolean(usuario.activo) }
 }
 
+function normalizarCurso(course) {
+  return {
+    id: course.id,
+    nombre: course.nombre,
+    idioma: course.idioma,
+    nivel: course.nivel,
+    profesorId: Number(course.profesor_id ?? course.profesorId),
+  }
+}
+
 function AdminDashboard() {
   const { currentUser, logout } = useAuth()
   const [usuarios, setUsuarios] = useState([])
-  const profesores = usuarios.filter((user) => user.rol === 'profesor')
-  const cursoVacio = {
+  const profesores = usuarios.filter(
+    (user) => user.rol === 'profesor' && user.activo,
+  )
+  const [cursos, setCursos] = useState([])
+  const [formUsuario, setFormUsuario] = useState(usuarioVacio)
+  const [formCurso, setFormCurso] = useState({
     nombre: '',
     idioma: '',
     nivel: '',
-    profesorId: profesores[0]?.id || '',
-  }
-  const [cursos, setCursos] = useState(courses)
-  const [formUsuario, setFormUsuario] = useState(usuarioVacio)
-  const [formCurso, setFormCurso] = useState(cursoVacio)
+    profesorId: '',
+  })
   const [cursoEditandoId, setCursoEditandoId] = useState(null)
   const [mensajeUsuarios, setMensajeUsuarios] = useState('')
   const [cargandoUsuarios, setCargandoUsuarios] = useState(true)
   const [procesandoUsuario, setProcesandoUsuario] = useState(false)
   const [usuarioEditandoId, setUsuarioEditandoId] = useState(null)
+  const [cargandoCursos, setCargandoCursos] = useState(true)
+  const [procesandoCurso, setProcesandoCurso] = useState(false)
+  const [mensajeCursos, setMensajeCursos] = useState('')
 
   useEffect(() => {
     async function cargarUsuarios() {
@@ -55,6 +73,28 @@ function AdminDashboard() {
 
     cargarUsuarios()
   }, [])
+
+  useEffect(() => {
+    async function cargarCursos() {
+      try {
+        const data = await getCoursesRequest()
+        const lista = data.cursos || data
+        setCursos(lista.map(normalizarCurso))
+      } catch (error) {
+        setMensajeCursos(error.message)
+      } finally {
+        setCargandoCursos(false)
+      }
+    }
+
+    cargarCursos()
+  }, [])
+
+  useEffect(() => {
+    if (!formCurso.profesorId && profesores.length) {
+      setFormCurso((form) => ({ ...form, profesorId: profesores[0].id }))
+    }
+  }, [formCurso.profesorId, profesores])
 
   function handleUsuarioChange(event) {
     const { name, value, checked, type } = event.target
@@ -73,7 +113,12 @@ function AdminDashboard() {
   }
 
   function limpiarFormulario() {
-    setFormCurso(cursoVacio)
+    setFormCurso({
+      nombre: '',
+      idioma: '',
+      nivel: '',
+      profesorId: profesores[0]?.id || '',
+    })
     setCursoEditandoId(null)
   }
 
@@ -153,31 +198,44 @@ function AdminDashboard() {
     }
   }
 
-  function guardarCurso(event) {
+  async function guardarCurso(event) {
     event.preventDefault()
 
-    if (!formCurso.nombre || !formCurso.idioma || !formCurso.nivel) {
+    if (procesandoCurso) return
+
+    if (
+      !formCurso.nombre ||
+      !formCurso.idioma ||
+      !formCurso.nivel ||
+      !formCurso.profesorId
+    ) {
       return
     }
 
-    if (cursoEditandoId) {
-      setCursos(
-        cursos.map((course) =>
-          course.id === cursoEditandoId ? { ...course, ...formCurso } : course,
-        ),
-      )
+    setMensajeCursos('')
+    setProcesandoCurso(true)
+
+    try {
+      if (cursoEditandoId) {
+        const data = await updateCourseRequest(cursoEditandoId, formCurso)
+        const cursoActualizado = normalizarCurso(data.curso || data)
+        setCursos((lista) =>
+          lista.map((course) =>
+            course.id === cursoEditandoId ? cursoActualizado : course,
+          ),
+        )
+      } else {
+        const data = await createCourseRequest(formCurso)
+        const nuevoCurso = normalizarCurso(data.curso || data)
+        setCursos((lista) => [...lista, nuevoCurso])
+      }
+
       limpiarFormulario()
-      return
+    } catch (error) {
+      setMensajeCursos(error.message)
+    } finally {
+      setProcesandoCurso(false)
     }
-
-    const nuevoCurso = {
-      id: Date.now(),
-      ...formCurso,
-      alumnosIds: [],
-    }
-
-    setCursos([...cursos, nuevoCurso])
-    limpiarFormulario()
   }
 
   function editarCurso(course) {
@@ -190,11 +248,21 @@ function AdminDashboard() {
     })
   }
 
-  function eliminarCurso(courseId) {
-    setCursos(cursos.filter((course) => course.id !== courseId))
+  async function eliminarCurso(courseId) {
+    if (procesandoCurso || !window.confirm('¿Eliminar este curso?')) return
 
-    if (cursoEditandoId === courseId) {
-      limpiarFormulario()
+    setMensajeCursos('')
+    setProcesandoCurso(true)
+
+    try {
+      await deleteCourseRequest(courseId)
+      setCursos((lista) => lista.filter((course) => course.id !== courseId))
+
+      if (cursoEditandoId === courseId) limpiarFormulario()
+    } catch (error) {
+      setMensajeCursos(error.message)
+    } finally {
+      setProcesandoCurso(false)
     }
   }
 
@@ -410,13 +478,22 @@ function AdminDashboard() {
           </label>
 
           <div className="acciones-form">
-            <button type="submit" className="boton-principal">
-              {cursoEditandoId ? 'Guardar cambios' : 'Agregar curso'}
+            <button
+              type="submit"
+              className="boton-principal"
+              disabled={procesandoCurso || !profesores.length}
+            >
+              {procesandoCurso
+                ? 'Procesando...'
+                : cursoEditandoId
+                  ? 'Guardar cambios'
+                  : 'Agregar curso'}
             </button>
             {cursoEditandoId && (
               <button
                 type="button"
                 className="boton-secundario"
+                disabled={procesandoCurso}
                 onClick={limpiarFormulario}
               >
                 Cancelar
@@ -425,7 +502,10 @@ function AdminDashboard() {
           </div>
         </form>
 
+        {mensajeCursos && <p className="mensaje-error">{mensajeCursos}</p>}
+
         <div className="lista-simple">
+          {cargandoCursos && <p>Cargando cursos...</p>}
           {cursos.map((course) => (
             <article className="lista-item" key={course.id}>
               <strong>{course.nombre}</strong>
@@ -437,6 +517,7 @@ function AdminDashboard() {
                 <button
                   type="button"
                   className="boton-chico"
+                  disabled={procesandoCurso}
                   onClick={() => editarCurso(course)}
                 >
                   Editar
@@ -444,6 +525,7 @@ function AdminDashboard() {
                 <button
                   type="button"
                   className="boton-chico boton-peligro"
+                  disabled={procesandoCurso}
                   onClick={() => eliminarCurso(course.id)}
                 >
                   Eliminar
