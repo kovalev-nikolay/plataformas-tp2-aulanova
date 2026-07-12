@@ -105,3 +105,7 @@ export function updateCourseRequest(id, curso) {
 export function deleteCourseRequest(id) {
   return authenticatedRequest(`/courses/${id}`, { method: 'DELETE' })
 }
+
+export function getClassesRequest() {
+  return authenticatedRequest('/classes')
+}

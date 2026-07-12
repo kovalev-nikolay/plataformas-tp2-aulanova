@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { classes } from '../data/mockData'
 import { useAuth } from '../context/AuthContext'
 import {
   createUserRequest,
   createCourseRequest,
   deleteCourseRequest,
   deleteUserRequest,
+  getClassesRequest,
   getCoursesRequest,
   getUsersRequest,
   updateCourseRequest,
@@ -35,6 +35,17 @@ function normalizarCurso(course) {
   }
 }
 
+function normalizarClase(clase) {
+  return {
+    id: clase.id,
+    courseId: Number(clase.curso_id ?? clase.courseId),
+    titulo: clase.titulo,
+    fecha: clase.fecha,
+    hora: clase.hora,
+    aula: clase.aula,
+  }
+}
+
 function AdminDashboard() {
   const { currentUser, logout } = useAuth()
   const [usuarios, setUsuarios] = useState([])
@@ -57,6 +68,9 @@ function AdminDashboard() {
   const [cargandoCursos, setCargandoCursos] = useState(true)
   const [procesandoCurso, setProcesandoCurso] = useState(false)
   const [mensajeCursos, setMensajeCursos] = useState('')
+  const [clases, setClases] = useState([])
+  const [cargandoClases, setCargandoClases] = useState(true)
+  const [mensajeClases, setMensajeClases] = useState('')
 
   useEffect(() => {
     async function cargarUsuarios() {
@@ -72,6 +86,22 @@ function AdminDashboard() {
     }
 
     cargarUsuarios()
+  }, [])
+
+  useEffect(() => {
+    async function cargarClases() {
+      try {
+        const data = await getClassesRequest()
+        const lista = data.clases || data
+        setClases(lista.map(normalizarClase))
+      } catch (error) {
+        setMensajeClases(error.message)
+      } finally {
+        setCargandoClases(false)
+      }
+    }
+
+    cargarClases()
   }, [])
 
   useEffect(() => {
@@ -272,6 +302,13 @@ function AdminDashboard() {
     )
   }
 
+  function nombreCurso(courseId) {
+    return (
+      cursos.find((course) => course.id === courseId)?.nombre ||
+      'Curso no disponible'
+    )
+  }
+
   return (
     <section className="panel dashboard-panel">
       <div className="dashboard-header">
@@ -297,7 +334,7 @@ function AdminDashboard() {
           <p>Cursos</p>
         </article>
         <article className="resumen-card">
-          <span>{classes.length}</span>
+          <span>{clases.length}</span>
           <p>Clases</p>
         </article>
       </section>
@@ -531,6 +568,29 @@ function AdminDashboard() {
                   Eliminar
                 </button>
               </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="dashboard-section">
+        <h2>Clases</h2>
+
+        {mensajeClases && <p className="mensaje-error">{mensajeClases}</p>}
+
+        <div className="lista-simple">
+          {cargandoClases && <p>Cargando clases...</p>}
+          {!cargandoClases && !mensajeClases && clases.length === 0 && (
+            <p>No hay clases registradas.</p>
+          )}
+          {clases.map((clase) => (
+            <article className="lista-item" key={clase.id}>
+              <strong>{clase.titulo}</strong>
+              <span>
+                {clase.fecha} · {clase.hora}
+              </span>
+              <span>Aula: {clase.aula}</span>
+              <span>Curso: {nombreCurso(clase.courseId)}</span>
             </article>
           ))}
         </div>
