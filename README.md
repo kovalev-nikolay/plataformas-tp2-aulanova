@@ -1,18 +1,8 @@
-# AulaNova - Sistema para escuela de idiomas
+# AulaNova
 
-## Materia
+AulaNova es una aplicación web para gestionar una escuela de idiomas. El frontend consume una API REST propia y muestra distintas funciones según el rol del usuario.
 
-Plataformas de Desarrollo
-
-## Integrante
-
-Nikolay Kovalev
-
-## Temática
-
-AulaNova es una Single Page Application para una escuela de idiomas chica en Buenos Aires.
-
-La idea del proyecto es tener una aplicación simple para mostrar información de la escuela, permitir el ingreso de usuarios y mostrar paneles distintos según el rol.
+**Autor:** Nikolay Kovalev
 
 ## Tecnologías
 
@@ -21,39 +11,62 @@ La idea del proyecto es tener una aplicación simple para mostrar información d
 - JavaScript
 - HTML
 - CSS
-- Mock data local
+
+## Requisitos
+
+- Node.js instalado.
+- Backend de AulaNova ejecutándose.
+
+## Instalación
+
+```bash
+npm install
+```
+
+## Configuración
+
+Copiar el archivo `.env.example` como `.env`. La configuración esperada es:
+
+```env
+VITE_API_URL=http://localhost:8888/api
+```
+
+## Ejecución
+
+```bash
+npm run dev
+```
+
+La URL local habitual del frontend es:
+
+```text
+http://localhost:5173
+```
+
+La URL esperada de la API es:
+
+```text
+http://localhost:8888/api
+```
 
 ## Usuarios de prueba
 
 | Rol | Email | Contraseña |
 | --- | --- | --- |
-| Admin | admin@aulanova.com | admin123 |
+| Administrador | admin@aulanova.com | admin123 |
 | Profesor | profesor@aulanova.com | profe123 |
 | Alumno | alumno@aulanova.com | alumno123 |
 
-## Funcionalidades principales
+## Funcionalidades por rol
 
-- Landing page con secciones Inicio, Cursos, Beneficios y Contacto.
-- Login y logout.
-- Roles admin, profesor y alumno.
-- Dashboard distinto según rol.
-- Admin puede gestionar usuarios de forma local.
-- Admin puede gestionar cursos de forma local.
-- Profesor puede consultar sus clases y alumnos.
-- Alumno puede consultar cursos y próximas clases ordenadas por fecha.
-- Formulario de contacto visual en la landing page.
+- **Administrador:** gestión de usuarios, cursos y asignación de alumnos.
+- **Profesor:** consulta de sus cursos y gestión de clases.
+- **Alumno:** consulta de sus cursos y clases.
 
-## Aclaraciones
+La autenticación utiliza tokens JWT entregados por la API.
 
-- El proyecto no usa backend ni base de datos porque corresponde al TP_2 frontend.
-- Los datos son mock/locales.
-- Para el final se podría agregar API REST, base de datos y autenticación con token.
+## Backend
 
-## Comandos
+El código del backend está disponible en:
 
-```bash
-npm.cmd install
-npm.cmd run dev
-npm.cmd run lint
-npm.cmd run build
-```
+https://github.com/kovalev-nikolay/plataformas-final-aulanova-api
