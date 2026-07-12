@@ -9,6 +9,7 @@ import {
   getCoursesRequest,
   getUsersRequest,
   updateCourseRequest,
+  updateCourseStudentsRequest,
   updateUserRequest,
 } from '../services/api'
 
@@ -27,11 +28,14 @@ function normalizarUsuario(user) {
 
 function normalizarCurso(course) {
   return {
-    id: course.id,
+    id: Number(course.id),
     nombre: course.nombre,
     idioma: course.idioma,
     nivel: course.nivel,
     profesorId: Number(course.profesor_id ?? course.profesorId),
+    alumnosIds: Array.isArray(course.alumnosIds)
+      ? course.alumnosIds.map(Number)
+      : [],
   }
 }
 
@@ -52,6 +56,9 @@ function AdminDashboard() {
   const profesores = usuarios.filter(
     (user) => user.rol === 'profesor' && user.activo,
   )
+  const alumnos = usuarios.filter(
+    (user) => user.rol === 'alumno' && user.activo,
+  )
   const [cursos, setCursos] = useState([])
   const [formUsuario, setFormUsuario] = useState(usuarioVacio)
   const [formCurso, setFormCurso] = useState({
@@ -71,6 +78,10 @@ function AdminDashboard() {
   const [clases, setClases] = useState([])
   const [cargandoClases, setCargandoClases] = useState(true)
   const [mensajeClases, setMensajeClases] = useState('')
+  const [cursoAlumnosEditandoId, setCursoAlumnosEditandoId] = useState(null)
+  const [alumnosSeleccionados, setAlumnosSeleccionados] = useState([])
+  const [procesandoAlumnos, setProcesandoAlumnos] = useState(false)
+  const [mensajeAlumnos, setMensajeAlumnos] = useState('')
 
   useEffect(() => {
     async function cargarUsuarios() {
@@ -296,6 +307,53 @@ function AdminDashboard() {
     }
   }
 
+  function gestionarAlumnos(course) {
+    setMensajeAlumnos('')
+    setCursoAlumnosEditandoId(course.id)
+    setAlumnosSeleccionados(course.alumnosIds)
+  }
+
+  function cambiarAlumno(alumnoId) {
+    const id = Number(alumnoId)
+    setAlumnosSeleccionados((seleccionados) =>
+      seleccionados.includes(id)
+        ? seleccionados.filter((item) => item !== id)
+        : [...new Set([...seleccionados, id])],
+    )
+  }
+
+  function cancelarGestionAlumnos() {
+    setCursoAlumnosEditandoId(null)
+    setAlumnosSeleccionados([])
+    setMensajeAlumnos('')
+  }
+
+  async function guardarAlumnos() {
+    if (procesandoAlumnos || !cursoAlumnosEditandoId) return
+
+    setMensajeAlumnos('')
+    setProcesandoAlumnos(true)
+
+    try {
+      const data = await updateCourseStudentsRequest(
+        cursoAlumnosEditandoId,
+        alumnosSeleccionados,
+      )
+      const cursoActualizado = normalizarCurso(data.curso || data)
+      setCursos((lista) =>
+        lista.map((course) =>
+          course.id === cursoAlumnosEditandoId ? cursoActualizado : course,
+        ),
+      )
+      setCursoAlumnosEditandoId(null)
+      setAlumnosSeleccionados([])
+    } catch (error) {
+      setMensajeAlumnos(error.message)
+    } finally {
+      setProcesandoAlumnos(false)
+    }
+  }
+
   function nombreProfesor(profesorId) {
     return (
       usuarios.find((user) => user.id === profesorId)?.nombre || 'Sin profesor'
@@ -307,6 +365,14 @@ function AdminDashboard() {
       cursos.find((course) => course.id === courseId)?.nombre ||
       'Curso no disponible'
     )
+  }
+
+  function nombresAlumnos(alumnosIds) {
+    const nombres = alumnosIds
+      .map((id) => usuarios.find((user) => Number(user.id) === id)?.nombre)
+      .filter(Boolean)
+
+    return nombres.length ? nombres.join(', ') : 'Sin alumnos asignados'
   }
 
   return (
@@ -550,7 +616,16 @@ function AdminDashboard() {
                 {course.idioma} · Nivel {course.nivel}
               </span>
               <span>Profesor: {nombreProfesor(course.profesorId)}</span>
+              <span>Alumnos: {nombresAlumnos(course.alumnosIds)}</span>
               <div className="acciones-item">
+                <button
+                  type="button"
+                  className="boton-chico"
+                  disabled={procesandoAlumnos}
+                  onClick={() => gestionarAlumnos(course)}
+                >
+                  Gestionar alumnos
+                </button>
                 <button
                   type="button"
                   className="boton-chico"
@@ -568,6 +643,48 @@ function AdminDashboard() {
                   Eliminar
                 </button>
               </div>
+              {cursoAlumnosEditandoId === course.id && (
+                <div>
+                  {alumnos.length === 0 ? (
+                    <p>No hay alumnos activos disponibles.</p>
+                  ) : (
+                    alumnos.map((alumno) => (
+                      <label key={alumno.id}>
+                        <input
+                          type="checkbox"
+                          checked={alumnosSeleccionados.includes(
+                            Number(alumno.id),
+                          )}
+                          disabled={procesandoAlumnos}
+                          onChange={() => cambiarAlumno(alumno.id)}
+                        />
+                        {alumno.nombre}
+                      </label>
+                    ))
+                  )}
+                  <div className="acciones-form">
+                    <button
+                      type="button"
+                      className="boton-principal"
+                      disabled={procesandoAlumnos}
+                      onClick={guardarAlumnos}
+                    >
+                      {procesandoAlumnos ? 'Guardando...' : 'Guardar alumnos'}
+                    </button>
+                    <button
+                      type="button"
+                      className="boton-secundario"
+                      disabled={procesandoAlumnos}
+                      onClick={cancelarGestionAlumnos}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  {mensajeAlumnos && (
+                    <p className="mensaje-error">{mensajeAlumnos}</p>
+                  )}
+                </div>
+              )}
             </article>
           ))}
         </div>

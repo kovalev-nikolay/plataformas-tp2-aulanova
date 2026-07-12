@@ -106,6 +106,13 @@ export function deleteCourseRequest(id) {
   return authenticatedRequest(`/courses/${id}`, { method: 'DELETE' })
 }
 
+export function updateCourseStudentsRequest(id, alumnosIds) {
+  return authenticatedRequest(`/courses/${id}/students`, {
+    method: 'PUT',
+    body: JSON.stringify({ alumnosIds: alumnosIds.map(Number) }),
+  })
+}
+
 export function getClassesRequest() {
   return authenticatedRequest('/classes')
 }
