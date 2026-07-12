@@ -109,3 +109,33 @@ export function deleteCourseRequest(id) {
 export function getClassesRequest() {
   return authenticatedRequest('/classes')
 }
+
+export function createClassRequest(clase) {
+  return authenticatedRequest('/classes', {
+    method: 'POST',
+    body: JSON.stringify({
+      courseId: Number(clase.courseId),
+      titulo: clase.titulo,
+      fecha: clase.fecha,
+      hora: clase.hora,
+      aula: clase.aula,
+    }),
+  })
+}
+
+export function updateClassRequest(id, clase) {
+  return authenticatedRequest(`/classes/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      courseId: Number(clase.courseId),
+      titulo: clase.titulo,
+      fecha: clase.fecha,
+      hora: clase.hora,
+      aula: clase.aula,
+    }),
+  })
+}
+
+export function deleteClassRequest(id) {
+  return authenticatedRequest(`/classes/${id}`, { method: 'DELETE' })
+}
